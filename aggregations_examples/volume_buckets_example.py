@@ -87,6 +87,16 @@ def run_volume_buckets_example():
             print("No volume buckets generated")
     
     print("\nVolume Buckets example completed!")
+    
+    # Simple visualization
+    try:
+        from visualization.volume_buckets_visualization import plot_volume_buckets
+        print("\nCreating volume buckets visualization...")
+        buckets = bucket_agg.generate_volume_buckets(bucket_size=1000.0)
+        if buckets:
+            plot_volume_buckets(buckets, "BTCUSDT Volume Buckets")
+    except ImportError:
+        print("Visualization module not available")
 
 if __name__ == "__main__":
     run_volume_buckets_example() 

@@ -93,6 +93,16 @@ def run_order_flow_example():
             print("No order flow data generated")
     
     print("\nOrder Flow example completed!")
+    
+    # Simple visualization
+    try:
+        from visualization.order_flow_visualization import plot_order_flow
+        print("\nCreating order flow visualization...")
+        orderflow = flow_agg.generate_order_flow('5min')
+        if orderflow:
+            plot_order_flow(orderflow, "BTCUSDT Order Flow Analysis")
+    except ImportError:
+        print("Visualization module not available")
 
 if __name__ == "__main__":
     run_order_flow_example() 

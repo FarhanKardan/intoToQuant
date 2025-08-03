@@ -80,6 +80,17 @@ def run_vwap_example():
             print("No VWAP data generated")
     
     print("\nVWAP example completed!")
+    
+    # Simple visualization
+    try:
+        from visualization.vwap_visualization import plot_vwap
+        print("\nCreating VWAP visualization...")
+        # Use 5min data for visualization
+        vwap_data = vwap_agg.generate_vwap('5min')
+        if vwap_data:
+            plot_vwap(vwap_data, "BTCUSDT VWAP Analysis")
+    except ImportError:
+        print("Visualization module not available")
 
 if __name__ == "__main__":
     run_vwap_example() 

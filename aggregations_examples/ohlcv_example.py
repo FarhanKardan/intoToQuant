@@ -73,6 +73,17 @@ def run_ohlcv_example():
             print("No OHLCV data generated")
     
     print("\nOHLCV example completed!")
+    
+    # Simple visualization
+    try:
+        from visualization.ohlcv_visualization import plot_ohlcv
+        print("\nCreating OHLCV visualization...")
+        # Use 5min data for visualization
+        ohlcv_data = ohlcv_agg.generate_ohlcv('5min')
+        if ohlcv_data:
+            plot_ohlcv(ohlcv_data, "BTCUSDT OHLCV Analysis")
+    except ImportError:
+        print("Visualization module not available")
 
 if __name__ == "__main__":
     run_ohlcv_example() 
