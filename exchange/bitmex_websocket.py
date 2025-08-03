@@ -8,12 +8,8 @@ from exchange.models import TickData
 
 class BitmexWebSocket:
     def __init__(self, testnet=False):
-        if testnet:
-            self.ws_url = "wss://testnet.bitmex.com/realtime"
-        else:
-            self.ws_url = "wss://ws.bitmex.com/realtime"
+        self.ws_url = "wss://testnet.bitmex.com/realtime" if testnet else "wss://ws.bitmex.com/realtime"
         self.websocket = None
-        self.is_connected = False
     
     async def connect(self):
         ssl_context = ssl.create_default_context()
@@ -24,8 +20,6 @@ class BitmexWebSocket:
             websockets.connect(self.ws_url, ssl=ssl_context),
             timeout=10
         )
-        self.is_connected = True
-        print(f"Connected to BitMEX WebSocket: {self.ws_url}")
     
     async def orderbook_l2_25(self, symbol):
         subscribe_message = {
@@ -37,35 +31,12 @@ class BitmexWebSocket:
         async for message in self.websocket:
             data = json.loads(message)
             if 'table' in data and data['table'] == 'orderBook10' and 'data' in data:
-                raw_data = data['data']
-                
-                for orderbook in raw_data:
-                    if orderbook.get('symbol') == symbol:
-                        bids = orderbook.get('bids', [])
-                        asks = orderbook.get('asks', [])
-                        
-                        formatted_bids = []
-                        for bid in bids:
-                            formatted_bids.append({
-                                'price': float(bid[0]),
-                                'size': float(bid[1])
-                            })
-                        
-                        formatted_asks = []
-                        for ask in asks:
-                            formatted_asks.append({
-                                'price': float(ask[0]),
-                                'size': float(ask[1])
-                            })
-                        
-                        full_orderbook = {
-                            'symbol': symbol,
-                            'timestamp': orderbook.get('timestamp', ''),
-                            'bids': formatted_bids,
-                            'asks': formatted_asks
-                        }
-                        
-                        return full_orderbook
+                orderbook = data['data'][0]
+                if orderbook.get('symbol') == symbol:
+                    return {
+                        'bids': [{'price': float(bid[0]), 'size': float(bid[1])} for bid in orderbook.get('bids', [])],
+                        'asks': [{'price': float(ask[0]), 'size': float(ask[1])} for ask in orderbook.get('asks', [])]
+                    }
     
     async def ticks(self, symbol):
         subscribe_message = {
@@ -77,17 +48,13 @@ class BitmexWebSocket:
         async for message in self.websocket:
             data = json.loads(message)
             if 'table' in data and data['table'] == 'trade' and 'data' in data:
-                raw_data = data['data']
-                tick_list = []
-                
-                for trade in raw_data:
-                    tick = TickData(
+                return [
+                    TickData(
                         symbol=trade.get('symbol', ''),
                         side=trade.get('side', ''),
                         size=float(trade.get('size', 0)),
                         price=float(trade.get('price', 0)),
                         timestamp=datetime.strptime(trade.get('timestamp', ''), '%Y-%m-%dT%H:%M:%S.%fZ')
                     )
-                    tick_list.append(tick)
-                
-                return tick_list 
+                    for trade in data['data']
+                ] 

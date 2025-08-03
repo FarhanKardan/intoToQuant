@@ -40,9 +40,7 @@ class TickQueue:
                 
             data = json.loads(message)
             if 'table' in data and data['table'] == 'trade' and 'data' in data:
-                raw_data = data['data']
-                
-                for trade in raw_data:
+                for trade in data['data']:
                     tick = TickData(
                         symbol=trade.get('symbol', ''),
                         side=trade.get('side', ''),
