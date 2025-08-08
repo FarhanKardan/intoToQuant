@@ -44,7 +44,7 @@ class OHLCVAggregator:
             data.append({
                 'timestamp': tick.timestamp,
                 'price': tick.price,
-                'volume': tick.size,
+                'volume': tick.size * tick.price,  # USD volume (BTC size * price)
                 'side': tick.side,
                 'symbol': tick.symbol
             })

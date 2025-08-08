@@ -25,17 +25,15 @@ def run_stats_example():
     
     print(f"Loading data from {start_date} to {end_date}...")
     
-    # Load historical data
+    # Load historical data (limited to 10000 ticks)
     record_count = 0
-    for record_info in data_reader.iterate_records(start_date, end_date, "*.csv"):
+    max_ticks = 10000
+    
+    for record_info in data_reader.iterate_records(start_date, end_date, "*.csv", limit=max_ticks):
         stats_agg.add_tick(record_info['tick_data'])
         record_count += 1
-        
-        # Progress indicator
-        if record_count % 100000 == 0:
-            print(f"Loaded {record_count} records...")
     
-    print(f"Successfully loaded {record_count} records")
+    print(f"Loaded {record_count} records")
     
     # Generate summary statistics
     print("\nGenerating summary statistics...")
@@ -43,24 +41,40 @@ def run_stats_example():
     
     if stats:
         print("Summary Statistics:")
-        print(f"  Total Ticks: {stats.total_ticks}")
-        print(f"  Total Volume: {stats.total_volume:.2f}")
-        print(f"  Average Price: ${stats.avg_price:.2f}")
-        print(f"  Price Range: ${stats.min_price:.2f} - ${stats.max_price:.2f}")
-        print(f"  Price Volatility: {stats.price_volatility:.4f}")
-        print(f"  Buy Volume: {stats.buy_volume:.2f}")
-        print(f"  Sell Volume: {stats.sell_volume:.2f}")
-        print(f"  Net Flow: {stats.net_flow:.2f}")
-        print(f"  Buy/Sell Ratio: {stats.buy_sell_ratio:.2f}")
-        print(f"  Average Trade Size: {stats.avg_trade_size:.2f}")
-        print(f"  Large Trades (>1000): {stats.large_trades}")
-        print(f"  Time Span: {stats.time_span}")
+        print(f"  Total Ticks: {stats.get('total_ticks', 'N/A')}")
+        print(f"  Total Volume: ${stats.get('total_volume', 0):,.2f}")
+        print(f"  Average Price: ${stats.get('avg_price', 0):.2f}")
+        print(f"  Time Span: {stats.get('time_span', 'N/A')}")
+        
+        # Volume statistics
+        volume_stats = stats.get('volume_stats', {})
+        print(f"\nVolume Statistics:")
+        print(f"  Total Buy Volume: ${volume_stats.get('total_buy_volume', 0):,.2f}")
+        print(f"  Total Sell Volume: ${volume_stats.get('total_sell_volume', 0):,.2f}")
+        print(f"  Average Trade Size: ${volume_stats.get('avg_trade_size', 0):,.2f}")
+        print(f"  Largest Trade: ${volume_stats.get('largest_trade', 0):,.2f}")
+        
+        
+        # Trade distribution
+        trade_dist = stats.get('trade_distribution', {})
+        print(f"\nTrade Distribution:")
+        print(f"  Buy Trades: {trade_dist.get('buy_trades', 0)}")
+        print(f"  Sell Trades: {trade_dist.get('sell_trades', 0)}")
+        
+        # Large orders categorization (>100K USD)
+        large_orders = stats.get('large_orders', {})
+        print(f"\nLarge Orders (>$100K USD):")
+        print(f"  Buy Orders: {large_orders.get('buy_orders_above_100k', 0)}")
+        print(f"  Sell Orders: {large_orders.get('sell_orders_above_100k', 0)}")
+        print(f"  Total Large Orders: {large_orders.get('total_large_orders', 0)}")
+        print(f"  Large Buy Volume: ${large_orders.get('large_buy_volume', 0):,.2f}")
+        print(f"  Large Sell Volume: ${large_orders.get('large_sell_volume', 0):,.2f}")
         
         # Simple visualization
         try:
             from visualization.stats_visualization import plot_summary_stats
             print("\nCreating statistics visualization...")
-            plot_summary_stats(stats.__dict__, "BTCUSDT Summary Statistics")
+            plot_summary_stats(stats, "BTCUSDT Summary Statistics")
         except ImportError:
             print("Visualization module not available")
     else:

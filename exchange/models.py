@@ -8,3 +8,17 @@ class TickData:
     size: float
     price: float
     timestamp: datetime 
+
+
+@dataclass
+class TopBookL1:
+    symbol: str
+    Bprice: float
+    Aprice: float
+    BSize: float
+    ASize: float
+    timestamp: datetime 
+
+
+
+

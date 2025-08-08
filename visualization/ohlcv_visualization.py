@@ -3,42 +3,35 @@ OHLCV Visualization Module
 """
 
 import matplotlib.pyplot as plt
+import mplfinance as mpf
 from typing import List
 import pandas as pd
 
 def plot_ohlcv(ohlcv_data: List, title: str = "OHLCV Candlesticks"):
-    """Simple OHLCV plot"""
+    """Plot OHLCV candlestick chart using mplfinance"""
     if not ohlcv_data:
         print("No OHLCV data to plot")
         return
     
-    # Convert to DataFrame
+    # Convert to DataFrame with proper format for mplfinance
     df = pd.DataFrame([{
-        'timestamp': ohlcv.timestamp,
-        'open': ohlcv.open,
-        'high': ohlcv.high,
-        'low': ohlcv.low,
-        'close': ohlcv.close,
-        'volume': ohlcv.volume
+        'Open': ohlcv.open,
+        'High': ohlcv.high,
+        'Low': ohlcv.low,
+        'Close': ohlcv.close,
+        'Volume': ohlcv.volume
     } for ohlcv in ohlcv_data])
     
-    # Create plot
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+    # Set timestamp as index
+    df.index = pd.to_datetime([ohlcv.timestamp for ohlcv in ohlcv_data])
     
-    # Close price line
-    ax1.plot(df['timestamp'], df['close'], 'b-', linewidth=2, label='Close Price')
-    ax1.set_title(title)
-    ax1.set_ylabel('Price')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-    
-    # Volume bars
-    ax2.bar(df['timestamp'], df['volume'], color='green', alpha=0.6)
-    ax2.set_ylabel('Volume')
-    ax2.set_xlabel('Time')
-    ax2.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
+    # Create candlestick chart
+    mpf.plot(df, 
+             type='candle',
+             title=title,
+             volume=True,
+             style='charles',
+             figsize=(12, 8),
+             panel_ratios=(3, 1))
 
  

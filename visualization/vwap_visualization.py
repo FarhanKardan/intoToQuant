@@ -1,39 +1,89 @@
 """
-Simple VWAP Visualization
+VWAP Visualization using mplfinance
 """
 
 import matplotlib.pyplot as plt
+import mplfinance as mpf
 import pandas as pd
 from typing import List
 
 def plot_vwap(vwap_data: List, title: str = "VWAP Analysis"):
-    """Simple VWAP plot"""
+    """Plot VWAP using mplfinance"""
     if not vwap_data:
         print("No VWAP data to plot")
         return
     
-    # Convert to DataFrame
+    # Convert to DataFrame with proper format for mplfinance
     df = pd.DataFrame([{
-        'timestamp': vwap.timestamp,
-        'vwap': vwap.vwap,
-        'volume': vwap.volume
+        'Open': vwap.vwap,  # Use VWAP as both open and close for line chart
+        'High': vwap.vwap,
+        'Low': vwap.vwap,
+        'Close': vwap.vwap,
+        'Volume': vwap.volume
     } for vwap in vwap_data])
     
-    # Create plot
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+    # Set timestamp as index
+    df.index = pd.to_datetime([vwap.timestamp for vwap in vwap_data])
     
-    # VWAP line
-    ax1.plot(df['timestamp'], df['vwap'], 'b-', linewidth=2, label='VWAP')
-    ax1.set_title(title)
-    ax1.set_ylabel('Price')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
+    # Create VWAP chart with volume
+    mpf.plot(df, 
+             type='line',  # Use line chart for VWAP
+             title=title,
+             volume=True,
+             style='charles',
+             figsize=(12, 8),
+             panel_ratios=(3, 1),
+             ylabel='VWAP Price',
+             ylabel_lower='Volume')
+
+def plot_vwap_with_candles(vwap_data: List, ohlcv_data: List, title: str = "VWAP + Candlesticks"):
+    """Plot VWAP line overlaid on OHLCV candlesticks"""
+    if not vwap_data or not ohlcv_data:
+        print("No data to plot")
+        return
     
-    # Volume bars
-    ax2.bar(df['timestamp'], df['volume'], color='green', alpha=0.6)
-    ax2.set_ylabel('Volume')
-    ax2.set_xlabel('Time')
-    ax2.grid(True, alpha=0.3)
+    # Convert VWAP to DataFrame
+    vwap_df = pd.DataFrame([{
+        'Open': vwap.vwap,
+        'High': vwap.vwap,
+        'Low': vwap.vwap,
+        'Close': vwap.vwap,
+        'Volume': vwap.volume
+    } for vwap in vwap_data])
+    vwap_df.index = pd.to_datetime([vwap.timestamp for vwap in vwap_data])
     
-    plt.tight_layout()
-    plt.show() 
+    # Convert OHLCV to DataFrame
+    ohlcv_df = pd.DataFrame([{
+        'Open': ohlcv.open,
+        'High': ohlcv.high,
+        'Low': ohlcv.low,
+        'Close': ohlcv.close,
+        'Volume': ohlcv.volume
+    } for ohlcv in ohlcv_data])
+    ohlcv_df.index = pd.to_datetime([ohlcv.timestamp for ohlcv in ohlcv_data])
+    
+    # Create custom style for VWAP line
+    vwap_style = mpf.make_mpf_style(
+        base_mpf_style='charles',
+        marketcolors=mpf.make_marketcolors(
+            up='green', down='red',
+            edge='inherit',
+            wick='inherit',
+            volume='blue'
+        ),
+        gridstyle='',
+        y_on_right=False
+    )
+    
+    # Plot candlesticks with VWAP overlay
+    mpf.plot(ohlcv_df,
+             type='candle',
+             title=title,
+             volume=True,
+             style=vwap_style,
+             figsize=(15, 10),
+             panel_ratios=(3, 1),
+             addplot=[
+                 mpf.make_addplot(vwap_df['Close'], color='orange', width=2, label='VWAP')
+             ],
+             savefig='vwap_candles.png') 

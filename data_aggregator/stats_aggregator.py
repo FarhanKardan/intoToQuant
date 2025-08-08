@@ -32,7 +32,7 @@ class StatsAggregator:
             data.append({
                 'timestamp': tick.timestamp,
                 'price': tick.price,
-                'volume': tick.size,
+                'volume': tick.size * tick.price,  # USD volume (BTC size * price)
                 'side': tick.side,
                 'symbol': tick.symbol
             })
@@ -54,6 +54,14 @@ class StatsAggregator:
         
         df = self._prepare_dataframe()
         
+        # Categorize orders by volume thresholds
+        buy_orders = df[df['side'].str.lower() == 'buy']
+        sell_orders = df[df['side'].str.lower() == 'sell']
+        
+        # Orders > 100K USD
+        large_buy_orders = buy_orders[buy_orders['volume'] > 100000]
+        large_sell_orders = sell_orders[sell_orders['volume'] > 100000]
+        
         stats = {
             'total_ticks': len(df),
             'time_span': df['timestamp'].max() - df['timestamp'].min(),
@@ -71,8 +79,15 @@ class StatsAggregator:
                 'largest_trade': df['volume'].max()
             },
             'trade_distribution': {
-                'buy_trades': len(df[df['side'].str.lower() == 'buy']),
-                'sell_trades': len(df[df['side'].str.lower() == 'sell'])
+                'buy_trades': len(buy_orders),
+                'sell_trades': len(sell_orders)
+            },
+            'large_orders': {
+                'buy_orders_above_100k': len(large_buy_orders),
+                'sell_orders_above_100k': len(large_sell_orders),
+                'total_large_orders': len(large_buy_orders) + len(large_sell_orders),
+                'large_buy_volume': large_buy_orders['volume'].sum() if len(large_buy_orders) > 0 else 0,
+                'large_sell_volume': large_sell_orders['volume'].sum() if len(large_sell_orders) > 0 else 0
             }
         }
         

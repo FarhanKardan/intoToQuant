@@ -2,4 +2,7 @@ websockets==12.0
 pandas==2.0.3
 pyarrow==12.0.0
 matplotlib==3.7.2
-seaborn==0.12.2 
+seaborn==0.12.2
+mplfinance==0.12.10b0
+dash==2.16.1
+dash-bootstrap-components==1.5.0 

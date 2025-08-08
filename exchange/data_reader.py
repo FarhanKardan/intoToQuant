@@ -45,11 +45,12 @@ class DataReader:
         
         return pd.concat(dataframes, ignore_index=True) if aggregate else dataframes
     
-    def iterate_records(self, start_date, end_date, file_pattern="*.csv"):
+    def iterate_records(self, start_date, end_date, file_pattern="*.csv", limit=None):
         files = self.get_files_by_date_range(start_date, end_date, file_pattern)
         if not files:
             return
         
+        record_count = 0
         for filename in files:
             df = self.read_csv(filename)
             if df is not None:
@@ -72,6 +73,11 @@ class DataReader:
                             'index': index,
                             'tick_data': tick_data
                         }
+                        
+                        record_count += 1
+                        if limit and record_count >= limit:
+                            return
+                            
                     except (ValueError, TypeError):
                         continue
 

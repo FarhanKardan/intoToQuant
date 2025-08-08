@@ -58,3 +58,4 @@ class BitmexWebSocket:
                     )
                     for trade in data['data']
                 ] 
+
