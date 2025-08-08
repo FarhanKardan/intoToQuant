@@ -16,11 +16,10 @@ def run_volume_profile_example():
     parser = argparse.ArgumentParser(description="Generate and visualize a composite Volume Profile.")
     parser.add_argument('--timeframe', type=str, required=True, choices=['1H', '30min', '5min'], help="Timeframe for aggregation.")
     parser.add_argument('--limit', type=int, default=None, help="Limit number of records to process.")
-    # --- آرگومان جدید برای انتخاب استایل ---
     parser.add_argument(
         '--style',
         type=str,
-        default='classic', # حالت کلاسیک به عنوان پیش‌فرض
+        default='classic',
         choices=['classic', 'heatmap'],
         help="Visualization style: 'classic' for bars, 'heatmap' for colors."
     )
@@ -46,7 +45,6 @@ def run_volume_profile_example():
 
     print(f"Generated {len(profiles)} profiles. Creating '{args.style}' visualization...")
 
-    # --- انتخاب تابع بصری‌سازی بر اساس استایل ---
     try:
         plot_title = f"BTCUSDT Composite Volume Profile ({args.timeframe})"
         if args.style == 'classic':

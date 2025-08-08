@@ -90,7 +90,6 @@ def plot_composite_profile(profiles: List[Dict[str, Any]], title: str, timeframe
     """
     if not profiles:
         return
-    # ... (کد هیت‌مپ بدون تغییر باقی می‌ماند) ...
     all_data = []
     for i, profile in enumerate(profiles):
         df = pd.DataFrame(profile['profile_data'])
