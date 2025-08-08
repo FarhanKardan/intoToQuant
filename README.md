@@ -120,6 +120,9 @@ python aggregations_examples/volume_buckets_example.py
 
 # Order Flow Example
 python aggregations_examples/order_flow_example.py
+
+# Order Flow / Volume Profile Example
+python aggregations_examples/volume_profile_example.py --timeframe 1H --limit 10000 --style classic
 ```
 
 ### Run All Examples
