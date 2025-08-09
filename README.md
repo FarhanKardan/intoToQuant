@@ -123,6 +123,10 @@ python aggregations_examples/order_flow_example.py
 
 # Order Flow / Volume Profile Example
 python aggregations_examples/volume_profile_example.py --timeframe 1H --limit 10000 --style classic
+
+# Order Flow / Footprint Example
+python aggregations_examples\footprint_example.py --limit 100000
+python aggregations_examples\footprint_example.py --mode range --range_levels 10 --bin_size 10 --limit 50000
 ```
 
 ### Run All Examples
