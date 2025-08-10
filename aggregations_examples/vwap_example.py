@@ -27,7 +27,7 @@ def run_vwap_example():
     
     # Load historical data (limited to 10000 ticks)
     record_count = 0
-    max_ticks = 10000
+    max_ticks = 100000
     
     for record_info in data_reader.iterate_records(start_date, end_date, "*.csv", limit=max_ticks):
         vwap_agg.add_tick(record_info['tick_data'])

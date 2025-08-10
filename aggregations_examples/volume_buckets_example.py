@@ -27,7 +27,7 @@ def run_volume_buckets_example():
     
     # Load historical data (limited to 10000 ticks)
     record_count = 0
-    max_ticks = 10000
+    max_ticks = 100000
     
     for record_info in data_reader.iterate_records(start_date, end_date, "*.csv", limit=max_ticks):
         bucket_agg.add_tick(record_info['tick_data'])
@@ -40,7 +40,7 @@ def run_volume_buckets_example():
     print(f"Successfully loaded {record_count} records (limited to {max_ticks})")
     
     # Generate volume buckets with 5000 size
-    bucket_size = 500000.0
+    bucket_size = 5000000.0
     
     print(f"\nGenerating Volume Buckets with size {bucket_size:.0f}...")
     buckets = bucket_agg.generate_volume_buckets(bucket_size)

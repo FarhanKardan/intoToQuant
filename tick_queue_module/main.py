@@ -1,5 +1,5 @@
 import asyncio
-from tick_queue_module.tick_queue import TickQueue
+from tick_queue import TickQueue
 
 async def tick_queue_example():
     queue = TickQueue(symbol="XBTUSD", max_length=10, testnet=False)
