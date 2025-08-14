@@ -7,9 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from exchange.data_reader import DataReader
-from exchange.models import TickData
 from data_aggregator.volume_bucket_aggregator import VolumeBucketAggregator
-from datetime import datetime
 
 def run_volume_buckets_example():
     """Run Volume Buckets aggregation on historical data"""
@@ -25,7 +23,7 @@ def run_volume_buckets_example():
     
     print(f"Loading data from {start_date} to {end_date}...")
     
-    # Load historical data (limited to 10000 ticks)
+    # Load historical data (limited to 100000 ticks)
     record_count = 0
     max_ticks = 100000
     
