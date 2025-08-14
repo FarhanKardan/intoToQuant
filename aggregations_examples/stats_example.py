@@ -7,9 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from exchange.data_reader import DataReader
-from exchange.models import TickData
 from data_aggregator.stats_aggregator import StatsAggregator
-from datetime import datetime
 
 def run_stats_example():
     """Run Statistics aggregation on historical data"""
