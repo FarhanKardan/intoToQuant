@@ -17,9 +17,9 @@ def run_volume_buckets_example():
     data_reader = DataReader("data")
     bucket_agg = VolumeBucketAggregator("BTCUSDT")
     
-    # Load data for a specific date
+    # Load data for 3 days
     start_date = "2024-05-01"
-    end_date = "2024-05-01"
+    end_date = "2024-05-03"
     
     print(f"Loading data from {start_date} to {end_date}...")
     

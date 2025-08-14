@@ -73,10 +73,10 @@ class AggregationSystem:
 def main():    
     agg_system = AggregationSystem("BTCUSDT")
     
-    # agg_system.export_delta(timeframe="1h", filename="delta_results.csv")
+    agg_system.export_delta(timeframe="1h", filename="delta_results.csv")
     agg_system.export_volume_profile(timeframe="1h", filename="volume_profile_results.csv")
-    # agg_system.export_volume_buckets(bucket_size=5000000.0, filename="volume_buckets_results.csv")
-    # agg_system.export_ohlcv(timeframe="5min", filename="ohlcv_results.csv")
+    agg_system.export_volume_buckets(bucket_size=5000000.0, filename="volume_buckets_results.csv")
+    agg_system.export_ohlcv(timeframe="5min", filename="ohlcv_results.csv")
     
 if __name__ == "__main__":
     main()
