@@ -38,7 +38,7 @@ def run_volume_buckets_example():
     print(f"Successfully loaded {record_count} records (limited to {max_ticks})")
     
     # Generate volume buckets with 5000 size
-    bucket_size = 5000000.0
+    bucket_size = 500000.0
     
     print(f"\nGenerating Volume Buckets with size {bucket_size:.0f}...")
     buckets = bucket_agg.generate_volume_buckets(bucket_size)
